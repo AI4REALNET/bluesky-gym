@@ -24,9 +24,9 @@ OBSTACLE_DISTANCE_MIN = 20 # KM
 OBSTACLE_DISTANCE_MAX = 150 # KM
 
 D_HEADING = 45 #degrees
-D_SPEED = 20/3 # kts (check)
+D_SPEED = 20/3 # m/s
 
-AC_SPD = 150 # kts
+AC_SPD = 150 # m/s (CAS - typical commercial airliner cruise value)
 ALTITUDE = 350 # In FL
 
 NM2KM = 1.852
@@ -349,7 +349,9 @@ class StaticObstacleEnv(gym.Env):
                 "cos_difference_restricted_area_pos": np.array(self.obstacle_centre_cos_bearing),
                 "sin_difference_restricted_area_pos": np.array(self.obstacle_centre_sin_bearing),
             }
-
+        # import pickle
+        # with open(f'observation_test.pkl', 'wb') as f:
+        #     pickle.dump(observation, f)
         return observation
     
     def _get_info(self):

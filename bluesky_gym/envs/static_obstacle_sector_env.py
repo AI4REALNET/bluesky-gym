@@ -25,9 +25,9 @@ OBSTACLE_DISTANCE_MIN = 20 # KM
 OBSTACLE_DISTANCE_MAX = 150 # KM
 
 D_HEADING = 45 #degrees
-D_SPEED = 20/3 # kts (check)
+D_SPEED = 20/3 # m/s
 
-AC_SPD = 150 # kts
+AC_SPD = 150 # m/s (CAS - typical commercial airliner cruise value)
 ALTITUDE = 350 # In FL
 
 NM2KM = 1.852
@@ -220,7 +220,7 @@ class StaticObstacleSectorEnv(gym.Env):
             p1 = vertices[i]
             p2 = vertices[(i + 1) % num_edges] # wrap around to first vertex
 
-            # Distribute remainder: first `extra_points` edges get one more
+            # Distribute remainder, first `extra_points` edges get one more
             n_interp = base_points + (1 if i < extra_points else 0)
 
             # Include original vertex
@@ -356,11 +356,10 @@ class StaticObstacleSectorEnv(gym.Env):
             wpt_dis_init = np.random.randint(WAYPOINT_DISTANCE_MIN, WAYPOINT_DISTANCE_MAX)
             wpt_hdg_init = np.random.randint(0, 360)
             wpt_lat, wpt_lon = fn.get_point_at_distance(bs.traf.lat[ac_idx], bs.traf.lon[ac_idx], wpt_dis_init, wpt_hdg_init)
-            # green(f'Generated waypoint at lat: {wpt_lat}, lon: {wpt_lon}')
             inside_temp = []
             # if the waypoint is outside the sector, then it is a invalid waypoint, triggering the loop to generate a new one
 
-            # magenta(f'Checking if waypoint is inside sector: {bs.tools.areafilter.checkInside("sector", np.array([wpt_lat]), np.array([wpt_lon]), np.array([bs.traf.alt[ac_idx]]))[0]}')
+            # print(f'Checking if waypoint is inside sector: {bs.tools.areafilter.checkInside("sector", np.array([wpt_lat]), np.array([wpt_lon]), np.array([bs.traf.alt[ac_idx]]))[0]}')
             if bs.tools.areafilter.checkInside('sector', np.array([wpt_lat]), np.array([wpt_lon]), np.array([bs.traf.alt[ac_idx]]))[0]:
                 inside_temp.append(False)
             else:
@@ -563,10 +562,6 @@ class StaticObstacleSectorEnv(gym.Env):
 
         px_per_km = self.window_width/MAX_DISTANCE
         ac_idx = bs.traf.id2idx('KL001')
-        # # Draw the sector polygon test 1
-        # airspace_color = (0, 0, 255)
-        # coords = [((self.window_width/2)+point[1]*NM2KM*px_per_km, (self.window_height/2)-point[0]*NM2KM*px_per_km) for point in self.poly_points]
-        # pygame.draw.polygon(canvas, airspace_color, coords, width=2)
 
         # Draw the sector polygon
         airspace_color = (0, 255, 0)    
